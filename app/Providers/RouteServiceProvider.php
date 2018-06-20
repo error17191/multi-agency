@@ -39,7 +39,9 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
-        //
+        $this->mapAgencyApiRoutes();
+
+        $this->mapAgencyWebRoutes();
     }
 
     /**
@@ -51,9 +53,9 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapWebRoutes()
     {
-        Route::middleware('web')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/web.php'));
+        Route::middleware(['web', 'bindings'])
+            ->namespace($this->namespace)
+            ->group(base_path('routes/web.php'));
     }
 
     /**
@@ -65,9 +67,24 @@ class RouteServiceProvider extends ServiceProvider
      */
     protected function mapApiRoutes()
     {
-        Route::prefix('api')
-             ->middleware('api')
-             ->namespace($this->namespace)
-             ->group(base_path('routes/api.php'));
+        Route::middleware(['api','bindings'])
+            ->namespace($this->namespace)
+            ->group(base_path('routes/api.php'));
+    }
+
+    protected function mapAgencyApiRoutes()
+    {
+        Route::middleware(['api', 'agency', 'bindings'])
+            ->namespace($this->namespace)
+            ->domain('{agency}.' . config('app.domain'))
+            ->group(base_path('routes/agencies/api.php'));
+    }
+
+    protected function mapAgencyWebRoutes()
+    {
+        Route::middleware(['web', 'agency', 'bindings'])
+            ->namespace($this->namespace)
+            ->domain('{agency}.' . config('app.domain'))
+            ->group(base_path('routes/agencies/web.php'));
     }
 }

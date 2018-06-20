@@ -211,4 +211,6 @@ return [
 
     ],
 
+
+    'domain' => env('APP_DOMAIN', 'multi-agency.test')
 ];
