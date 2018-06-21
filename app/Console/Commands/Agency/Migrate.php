@@ -4,6 +4,7 @@ namespace App\Console\Commands\Agency;
 
 use App\Agency;
 use Illuminate\Database\Console\Migrations\MigrateCommand;
+use Illuminate\Database\DatabaseManager;
 
 class Migrate extends MigrateCommand
 {
@@ -32,9 +33,10 @@ class Migrate extends MigrateCommand
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(DatabaseManager $db)
     {
         parent::__construct(app('migrator'));
+        $this->db = $db;
     }
 
     /**
@@ -50,8 +52,10 @@ class Migrate extends MigrateCommand
         foreach ($agencies as $agency) {
             $this->info('Migrating Agency - ' . $agency->uid);
             Agency::current($agency);
-            parent::handle();
 
+            $this->db->reconnect();
+            parent::handle();
+            $this->db->purge();
         }
     }
 
