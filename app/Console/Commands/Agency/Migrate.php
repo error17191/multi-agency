@@ -44,8 +44,20 @@ class Migrate extends MigrateCommand
      */
     public function handle()
     {
-        Agency::current(Agency::first());
         $this->input->setOption('database', 'agency');
-        parent::handle();
+
+        $agencies = Agency::all();
+        foreach ($agencies as $agency) {
+            $this->info('Migrating Agency - ' . $agency->uid);
+            Agency::current($agency);
+            parent::handle();
+
+        }
     }
+
+    protected function getMigrationPaths()
+    {
+        return [database_path('migrations/agencies/')];
+    }
+
 }

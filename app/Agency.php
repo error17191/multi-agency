@@ -44,7 +44,9 @@ class Agency extends Model
             return self::$currentAgency;
         }
         self::$currentAgency = $agency;
-
+        app('url')->defaults([
+            'agency' => $agency->uid
+        ]);
         $agencyConnection = config('database.connections.mysql');
         $agencyConnection['database'] = $agency->dbName();
         config()->set('database.connections.agency', $agencyConnection);
