@@ -76,7 +76,6 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware(['api', 'agency', 'bindings'])
             ->namespace($this->namespace)
-            ->name('agency.')
             ->domain('{agency}.' . config('app.domain'))
             ->group(base_path('routes/agencies/api.php'));
     }
@@ -85,7 +84,6 @@ class RouteServiceProvider extends ServiceProvider
     {
         Route::middleware(['web', 'agency', 'bindings'])
             ->namespace($this->namespace)
-            ->name('agency.')
             ->domain('{agency}.' . config('app.domain'))
             ->group(base_path('routes/agencies/web.php'));
     }
