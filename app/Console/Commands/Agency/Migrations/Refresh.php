@@ -1,19 +1,20 @@
 <?php
 
-namespace App\Console\Commands\Agency;
+namespace App\Console\Commands\Agency\Migrations;
 
+use Illuminate\Database\Console\Migrations\RefreshCommand;
 use App\Agency;
-use Illuminate\Database\Console\Migrations\MigrateCommand;
 use Illuminate\Database\DatabaseManager;
 
-class Migrate extends MigrateCommand
+class Refresh extends RefreshCommand
 {
+
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Running Refresh Command for Agency Databases';
 
     /**
      * Create a new command instance.
@@ -22,9 +23,9 @@ class Migrate extends MigrateCommand
      */
     public function __construct(DatabaseManager $db)
     {
-        parent::__construct(app('migrator'));
+        parent::__construct();
         $this->db = $db;
-        $this->setName('agency:migrate');
+        $this->setName('agency:refresh');
     }
 
     /**
@@ -34,15 +35,21 @@ class Migrate extends MigrateCommand
      */
     public function handle()
     {
+        if (!$this->confirmToProceed()) {
+            return;
+        }
+
         $this->input->setOption('database', 'agency');
 
         $agencies = Agency::all();
+
         if ($agencies->count() == 0) {
             $this->info("No Agencies Yet");
             return;
         }
+
         foreach ($agencies as $agency) {
-            $this->info('Migrating Agency - ' . $agency->uid);
+            $this->info('Refreshing Agency - ' . $agency->uid);
             Agency::current($agency);
 
             $this->db->reconnect();

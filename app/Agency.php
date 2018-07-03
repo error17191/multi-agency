@@ -15,15 +15,15 @@ class Agency extends Model
     {
         parent::boot();
 
-        self::creating(function ($agency) {
+        static::creating(function ($agency) {
             DB::statement("
-                CREATE DATABASE `{$agency->dbName()}`
+                CREATE DATABASE IF NOT EXISTS `{$agency->dbName()}`
             ");
         });
 
-        self::deleting(function ($agency) {
+        static::deleting(function ($agency) {
             DB::statement("
-                DROP DATABASE `{$agency->dbName()}`
+                DROP DATABASE IF EXISTS `{$agency->dbName()}`
             ");
         });
     }
