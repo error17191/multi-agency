@@ -9,19 +9,6 @@ use Illuminate\Database\DatabaseManager;
 class Migrate extends MigrateCommand
 {
     /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'm {--database= : The database connection to use.}
-                {--force : Force the operation to run when in production.}
-                {--path= : The path to the migrations files to be executed.}
-                {--realpath : Indicate any provided migration file paths are pre-resolved absolute paths.}
-                {--pretend : Dump the SQL queries that would be run.}
-                {--seed : Indicates if the seed task should be re-run.}
-                {--step : Force the migrations to be run so they can be rolled back individually.}';
-
-    /**
      * The console command description.
      *
      * @var string
@@ -37,6 +24,7 @@ class Migrate extends MigrateCommand
     {
         parent::__construct(app('migrator'));
         $this->db = $db;
+        $this->setName('agency:migrate');
     }
 
     /**
@@ -49,6 +37,10 @@ class Migrate extends MigrateCommand
         $this->input->setOption('database', 'agency');
 
         $agencies = Agency::all();
+        if ($agencies->count() == 0) {
+            $this->info("No Agencies Yet");
+            return;
+        }
         foreach ($agencies as $agency) {
             $this->info('Migrating Agency - ' . $agency->uid);
             Agency::current($agency);
